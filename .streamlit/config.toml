@@ -1,0 +1,16 @@
+# Streamlit theme configuration.
+# Option A — Dark with teal accents: matches the NovaPay aesthetic.
+
+[theme]
+base="dark"
+primaryColor="#5FDFDC"                  # teal — buttons, active tab underline, links
+backgroundColor="#111827"               # charcoal — main content background
+secondaryBackgroundColor="#1F2937"      # dark slate — sidebar + metric card backgrounds
+textColor="#F9FAFB"                     # off-white for body text
+font="sans serif"
+
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true

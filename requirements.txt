@@ -1,0 +1,34 @@
+# Versions align with Chapter 3, Table 3.4 (Technology Stack).
+# Lower bounds are lifted to the first release with Python 3.13 wheels,
+# so pip installs pre-built binaries instead of trying to compile from source.
+
+# ---- Core ML ----
+pandas>=2.2.3
+numpy>=2.1                      # 2.1.0 is the first release with Python 3.13 wheels
+scikit-learn>=1.5.2
+xgboost>=2.1.0
+lightgbm>=4.5.0
+imbalanced-learn>=0.13
+shap>=0.46                      # 0.46+ is compatible with NumPy 2.x
+joblib>=1.4
+
+# ---- Visualisation ----
+matplotlib>=3.9
+plotly>=5.24
+seaborn>=0.13
+kaleido>=0.2.1                  # static export of Plotly figures for the manuscript
+
+# ---- API layer (Chapter 3, section 3.5.1) ----
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.9
+
+# ---- Dashboard (Chapter 3, section 3.5.1) ----
+streamlit>=1.39
+
+# ---- Data layer (Chapter 3, section 3.5.1, Table 3.4) ----
+sqlalchemy>=2.0
+psycopg[binary]>=3.2            # PostgreSQL driver (works with Neon)
+
+# ---- Utilities ----
+python-dotenv>=1.0

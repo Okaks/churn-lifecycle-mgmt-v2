@@ -1,0 +1,28 @@
+# Secrets - NEVER commit this
+.env
+
+# Python environment
+.venv/
+__pycache__/
+*.pyc
+
+# Large generated data (dashboard reads from Neon directly, doesn't need these)
+data/raw/
+data/processed/
+
+# Trained model files (dashboard reads pre-computed results from Neon,
+# never loads the model directly - only src/inference.py does, and that
+# runs locally/offline, not as part of the deployed dashboard)
+models/*.joblib
+models/*.json
+
+# NOTE: outputs/figures/*.png and outputs/tables/*.csv are DELIBERATELY
+# NOT excluded here - the dashboard's Model Performance and Customer
+# Explainability tabs load these files directly, and Streamlit Cloud only
+# clones this repo, it never re-runs evaluation.py/explainability.py to
+# regenerate them. They must be committed for the deployed dashboard to work.
+
+# OS/editor cruft
+.DS_Store
+.vscode/
+*.log
