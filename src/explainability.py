@@ -34,7 +34,6 @@ import shap
 from src.config import (
     BEST_MODEL_FILE,
     FEATURE_LIST_FILE,
-    FIGURES_DIR,
     PROCESSED_DATA_DIR,
     RISK_LABEL_CLASSES,
     TABLES_DIR,
@@ -43,30 +42,18 @@ from src.config import (
 
 
 # ---------------------------------------------------------------------------
-# Dark matplotlib theme — matches the dashboard's charcoal + teal palette
+# Figure theme — dark for the dashboard (default), light for print.
+# Set FIGURE_THEME=light to write white-background figures to
+# outputs/figures_light/ without touching the dashboard's set.
 # ---------------------------------------------------------------------------
-_DARK_BG = "#111827"
-_PANEL_BG = "#1F2937"
-_GRID = "#374151"
-_TEXT = "#F9FAFB"
-_MUTED = "#94A3B8"
+from src.figure_theme import (
+    DPI,
+    FIGURE_BG as _DARK_BG,
+    OUTPUT_DIR as FIGURES_DIR,
+    apply_theme,
+)
 
-plt.rcParams.update({
-    "figure.facecolor": _DARK_BG,
-    "savefig.facecolor": _DARK_BG,
-    "axes.facecolor": _PANEL_BG,
-    "axes.edgecolor": _GRID,
-    "axes.labelcolor": _TEXT,
-    "axes.titlecolor": _TEXT,
-    "xtick.color": _MUTED,
-    "ytick.color": _MUTED,
-    "text.color": _TEXT,
-    "legend.facecolor": _PANEL_BG,
-    "legend.edgecolor": _GRID,
-    "legend.labelcolor": _TEXT,
-    "grid.color": _GRID,
-    "grid.alpha": 0.3,
-})
+apply_theme()
 
 
 # ---------------------------------------------------------------------------
@@ -131,7 +118,7 @@ def generate_global_bar_plot(shap_output, class_idx: int, class_name: str, out_p
     shap.plots.bar(shap_output[:, :, class_idx], max_display=15, show=False)
     plt.title(f"Global Feature Importance — {class_name}")
     plt.tight_layout()
-    plt.savefig(out_path, dpi=150, bbox_inches="tight", facecolor=_DARK_BG)
+    plt.savefig(out_path, dpi=DPI, bbox_inches="tight", facecolor=_DARK_BG)
     plt.close()
     print(f"Saved {class_name} global bar plot to {out_path}")
 
@@ -141,7 +128,7 @@ def generate_global_summary_plot(shap_output, class_idx: int, class_name: str, o
     shap.plots.beeswarm(shap_output[:, :, class_idx], max_display=15, show=False)
     plt.title(f"Feature Impact Distribution — {class_name}")
     plt.tight_layout()
-    plt.savefig(out_path, dpi=150, bbox_inches="tight", facecolor=_DARK_BG)
+    plt.savefig(out_path, dpi=DPI, bbox_inches="tight", facecolor=_DARK_BG)
     plt.close()
     print(f"Saved {class_name} global beeswarm to {out_path}")
 
@@ -175,7 +162,7 @@ def generate_local_waterfall(
     shap.plots.waterfall(shap_output[idx, :, class_idx], max_display=12, show=False)
     plt.title(f"{class_name} example (P({class_name})={prob:.3f})")
     plt.tight_layout()
-    plt.savefig(out_path, dpi=150, bbox_inches="tight", facecolor=_DARK_BG)
+    plt.savefig(out_path, dpi=DPI, bbox_inches="tight", facecolor=_DARK_BG)
     plt.close()
     print(f"Saved {class_name} waterfall to {out_path}")
 

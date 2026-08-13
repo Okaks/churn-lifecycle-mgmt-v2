@@ -43,7 +43,6 @@ from xgboost import XGBClassifier
 
 from src.config import (
     FEATURE_LIST_FILE,
-    FIGURES_DIR,
     PROCESSED_DATA_DIR,
     RANDOM_STATE,
     RISK_LABEL_CLASSES,
@@ -54,33 +53,21 @@ from src.database import engine
 
 
 # ---------------------------------------------------------------------------
-# Dark matplotlib theme — matches the dashboard's charcoal + teal palette
+# Figure theme — dark for the dashboard (default), light for print.
+# Set FIGURE_THEME=light to write white-background figures to
+# outputs/figures_light/ without touching the dashboard's set.
 # ---------------------------------------------------------------------------
-_DARK_BG = "#111827"
-_PANEL_BG = "#1F2937"
-_GRID = "#374151"
-_TEXT = "#F9FAFB"
-_MUTED = "#94A3B8"
+from src.figure_theme import (
+    CONFUSION_CMAP,
+    CONFUSION_TEXT_COLOR,
+    DPI,
+    FIGURE_BG as _DARK_BG,
+    MUTED as _MUTED,
+    OUTPUT_DIR as FIGURES_DIR,
+    apply_theme,
+)
 
-plt.rcParams.update({
-    "figure.facecolor": _DARK_BG,
-    "savefig.facecolor": _DARK_BG,
-    "axes.facecolor": _PANEL_BG,
-    "axes.edgecolor": _GRID,
-    "axes.labelcolor": _TEXT,
-    "axes.titlecolor": _TEXT,
-    "xtick.color": _MUTED,
-    "ytick.color": _MUTED,
-    "text.color": _TEXT,
-    "legend.facecolor": _PANEL_BG,
-    "legend.edgecolor": _GRID,
-    "legend.labelcolor": _TEXT,
-    "grid.color": _GRID,
-    "grid.alpha": 0.4,
-    "axes.grid": True,
-    "axes.spines.top": False,
-    "axes.spines.right": False,
-})
+apply_theme()
 
 
 # ---------------------------------------------------------------------------
@@ -164,12 +151,13 @@ def plot_confusion_matrix(model, name: str, X_test, y_test) -> None:
     disp = ConfusionMatrixDisplay(
         confusion_matrix=cm, display_labels=RISK_LABEL_CLASSES  # ["Low Risk", "Medium Risk", "High Risk"]
     )
-    # "cividis" reads well on dark backgrounds; text is auto-contrasted.
-    disp.plot(ax=ax, cmap="cividis", colorbar=False, values_format="d")
+    disp.plot(ax=ax, cmap=CONFUSION_CMAP, colorbar=False, values_format="d")
     ax.set_title(f"Confusion Matrix — {name}")
-    # Force high-contrast text on cells
+    # On dark, force light cell text. On light, matplotlib's own per-cell
+    # contrast is correct (pale cells need dark text), so only resize.
     for text_obj in ax.texts:
-        text_obj.set_color("#F9FAFB")
+        if CONFUSION_TEXT_COLOR is not None:
+            text_obj.set_color(CONFUSION_TEXT_COLOR)
         text_obj.set_fontsize(14)
         text_obj.set_fontweight("bold")
     ax.grid(False)
@@ -177,7 +165,7 @@ def plot_confusion_matrix(model, name: str, X_test, y_test) -> None:
 
     slug = name.lower().replace(" ", "_")
     out_path = FIGURES_DIR / f"confusion_matrix_{slug}.png"
-    plt.savefig(out_path, dpi=150, bbox_inches="tight", facecolor=_DARK_BG)
+    plt.savefig(out_path, dpi=DPI, bbox_inches="tight", facecolor=_DARK_BG)
     plt.close()
     print(f"  Saved {out_path.name}")
 
@@ -211,7 +199,7 @@ def plot_roc_curves(models: dict, X_test, y_test) -> None:
     plt.tight_layout()
 
     out_path = FIGURES_DIR / "roc_curves.png"
-    plt.savefig(out_path, dpi=150, bbox_inches="tight", facecolor=_DARK_BG)
+    plt.savefig(out_path, dpi=DPI, bbox_inches="tight", facecolor=_DARK_BG)
     plt.close()
     print(f"  Saved {out_path.name}")
 
@@ -244,7 +232,7 @@ def plot_metric_comparison(metrics_df: pd.DataFrame) -> None:
     plt.tight_layout()
 
     out_path = FIGURES_DIR / "metric_comparison.png"
-    plt.savefig(out_path, dpi=150, bbox_inches="tight", facecolor=_DARK_BG)
+    plt.savefig(out_path, dpi=DPI, bbox_inches="tight", facecolor=_DARK_BG)
     plt.close()
     print(f"  Saved {out_path.name}")
 
