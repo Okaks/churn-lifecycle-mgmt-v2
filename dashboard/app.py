@@ -954,3 +954,8 @@ elif selected_tab == "Retention Recommendations":
     render_recommendations()
 elif selected_tab == "Model Performance":
     render_performance()
+
+
+# ---------------------------------------------------------------------------
+# Making Update to the fileS
+# ---------------------------------------------------------------------------
